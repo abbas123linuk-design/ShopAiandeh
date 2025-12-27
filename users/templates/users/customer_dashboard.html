@@ -1,0 +1,13 @@
+<!-- users/templates/users/customer_dashboard.html -->
+{% extends 'users/dashboard_base.html' %}
+
+{% block title %}پیشخوان اصلی{% endblock %}
+
+{% block page_title %}پیشخوان{% endblock %}
+
+{% block content %}
+    <p>سلام {{ user.first_name|default:user.username }} عزیز!</p>
+    <p>از بازگشت شما خوشحالیم. این پنل کاربری شماست و از اینجا می‌توانید فعالیت‌های خود در فروشگاه را مدیریت کنید.</p>
+    <!-- در آینده اینجا ویجت‌های جذابی مثل "آخرین سفارش" یا "محصولات پیشنهادی" قرار خواهیم داد -->
+{% endblock %}
+

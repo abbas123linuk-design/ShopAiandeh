@@ -1,0 +1,26 @@
+<!-- products/templates/products/seller_product_delete_confirm.html -->
+{% extends 'users/dashboard_base.html' %}
+
+{% block title %}تایید حذف محصول{% endblock %}
+
+{% block page_title %}تایید حذف محصول{% endblock %}
+
+{% block content %}
+    <div class="confirm-container">
+        <p>آیا از حذف محصول "<strong>{{ product.name }}</strong>" اطمینان دارید؟</p>
+        <p>این عمل غیرقابل بازگشت است.</p>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn-delete">بله، حذف کن</button>
+            <a href="{% url 'products:seller_product_list' %}" class="btn-cancel">انصراف</a>
+        </form>
+    </div>
+
+    <style>
+        .confirm-container { background: white; padding: 30px; border-radius: 8px; text-align: center; max-width: 500px; margin: auto; }
+        .confirm-container p { font-size: 1.2rem; }
+        form { margin-top: 30px; }
+        .btn-delete { background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; text-decoration: none; }
+        .btn-cancel { background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-right: 10px; }
+    </style>
+{% endblock %}

@@ -1,0 +1,89 @@
+<!-- products/templates/products/product_detail.html -->
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .product-detail-container {
+        display: flex;
+        gap: 40px;
+        margin-top: 40px;
+    }
+    .product-gallery { flex: 1; }
+    .main-image-wrapper {
+        border-radius: 10px; overflow: hidden; margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .main-image-wrapper img { width: 100%; display: block; }
+    .thumbnail-wrapper { display: flex; gap: 10px; flex-wrap: wrap; }
+    .thumbnail {
+        width: 80px; height: 80px; border-radius: 5px; overflow: hidden;
+        cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s;
+    }
+    .thumbnail:hover, .thumbnail.active { border-color: var(--primary-color); }
+    .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+    .product-details { flex: 1; }
+    .product-details h1 { font-size: 2.2rem; margin-top: 0; }
+    .product-details .price {
+        font-size: 1.8rem; font-weight: bold; color: var(--primary-color); margin: 20px 0;
+    }
+    .product-details .description { line-height: 1.8; color: #555; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="product-detail-container">
+        
+        <!-- بخش گالری تصاویر -->
+        <div class="product-gallery">
+            <div class="main-image-wrapper">
+                <img id="main-product-image" src="{{ product.image.url }}" alt="{{ product.name }}">
+            </div>
+            <div class="thumbnail-wrapper">
+                {% if product.image %}
+                    <div class="thumbnail active">
+                        <img class="thumbnail-img" src="{{ product.image.url }}" alt="Thumbnail">
+                    </div>
+                {% endif %}
+                {% for image in product.images.all %}
+                    <div class="thumbnail">
+                        <img class="thumbnail-img" src="{{ image.image.url }}" alt="Thumbnail">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- بخش جزئیات محصول -->
+        <div class="product-details">
+            <h1>{{ product.name }}</h1>
+            <div class="price">{{ product.price|intcomma }} <span>تومان</span></div>
+            <div class="description">
+                <p>{{ product.description|linebreaksbr }}</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainImage = document.getElementById('main-product-image');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                thumbnails.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const newImageSrc = this.querySelector('.thumbnail-img').getAttribute('src');
+                mainImage.setAttribute('src', newImageSrc);
+            });
+        });
+    });
+</script>
+{% endblock %}

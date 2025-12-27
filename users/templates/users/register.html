@@ -1,0 +1,39 @@
+<!-- users/templates/users/register.html -->
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ثبت‌نام در فروشگاه آینده</title>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f0f2f5; margin: 0; }
+        .register-container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; max-width: 90%; }
+        h2 { text-align: center; }
+        form { display: flex; flex-direction: column; }
+        /* استایل‌های بیشتر برای زیبایی فرم */
+        form p { display: flex; flex-direction: column; margin-bottom: 15px; }
+        form p label { margin-bottom: 5px; font-weight: 600; }
+        form input[type="text"], form input[type="password"], form input[type="email"] {
+            padding: 10px; border-radius: 5px; border: 1px solid #ccc;
+        }
+        form ul.errorlist { color: red; list-style: none; padding: 0; font-size: 0.9em; }
+        .helptext { font-size: 0.8em; color: #666; margin-top: 5px; }
+        button { padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #218838; }
+        .login-link { text-align: center; margin-top: 20px; }
+        .login-link a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>ایجاد حساب کاربری</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">ثبت‌نام</button>
+        </form>
+        <div class="login-link">
+            <p>حساب کاربری دارید؟ <a href="{% url 'login' %}">وارد شوید</a></p>
+        </div>
+    </div>
+</body>
+</html>

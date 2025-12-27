@@ -1,0 +1,59 @@
+<!-- products/templates/products/seller_product_list.html -->
+{% extends 'users/dashboard_base.html' %}
+{% load humanize %}
+
+{% block title %}مدیریت محصولات{% endblock %}
+
+{% block page_title %}
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>مدیریت محصولات</span>
+        <a href="{% url 'products:seller_product_create' %}" class="btn-add-product">افزودن محصول جدید</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>تصویر</th>
+                    <th>نام محصول</th>
+                    <th>قیمت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="60" height="60" style="object-fit: cover; border-radius: 5px;">
+                            {% endif %}
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.price|intcomma }} تومان</td>
+                        <td>
+                            <a href="{% url 'products:seller_product_update' pk=product.pk %}" class="btn-action btn-edit">ویرایش</a>
+                            <a href="{% url 'products:seller_product_delete' pk=product.pk %}" class="btn-action btn-delete">حذف</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 40px;">شما هنوز محصولی اضافه نکرده‌اید.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <style>
+        .btn-add-product { background-color: #28a745; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
+        .table-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; vertical-align: middle; }
+        th { background-color: #f8f9fa; font-weight: 600; }
+        .btn-action { padding: 5px 12px; border-radius: 5px; text-decoration: none; color: white; font-size: 0.9em; }
+        .btn-edit { background-color: #007bff; }
+        .btn-delete { background-color: #dc3545; }
+    </style>
+{% endblock %}

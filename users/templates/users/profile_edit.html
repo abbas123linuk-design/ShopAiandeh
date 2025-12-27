@@ -1,0 +1,21 @@
+<!-- users/templates/users/profile_edit.html -->
+{% extends 'users/dashboard_base.html' %}
+
+{% block title %}ویرایش پروفایل{% endblock %}
+
+{% block page_title %}ویرایش اطلاعات پروفایل{% endblock %}
+
+{% block content %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset>
+            <legend>اطلاعات شخصی</legend>
+            {{ u_form.as_p }}
+        </fieldset>
+        <fieldset>
+            <legend>اطلاعات پروفایل</legend>
+            {{ p_form.as_p }}
+        </fieldset>
+        <button type="submit">ذخیره تغییرات</button>
+    </form>
+{% endblock %}
