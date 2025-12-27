@@ -5,60 +5,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}داشبورد من{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; background-color: #f8f9fa; display: flex; }
-        .sidebar { width: 250px; background-color: #343a40; color: white; height: 100vh; padding: 20px; box-sizing: border-box; flex-shrink: 0; }
-        .sidebar h2 { text-align: center; border-bottom: 1px solid #495057; padding-bottom: 15px; margin-top: 0; }
-        .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar ul li a, .sidebar ul li .logout-button-sidebar { display: block; padding: 12px 15px; color: #adb5bd; text-decoration: none; border-radius: 5px; margin-bottom: 5px; transition: background-color 0.2s, color 0.2s; }
-        .sidebar ul li a:hover, .sidebar ul li a.active, .logout-button-sidebar:hover { background-color: #495057; color: white; }
+        body { font-family: 'Vazirmatn', sans-serif; margin: 0; background-color: #f4f6f9; display: flex; min-height: 100vh; }
+        
+        /* استایل مدرن سایدبار */
+        .sidebar {
+            width: 280px; background-color: #ffffff; color: #333;
+            border-left: 1px solid #e1e4e8; flex-shrink: 0;
+            display: flex; flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+        }
+        .sidebar-header {
+            padding: 30px 20px; text-align: center; border-bottom: 1px solid #f0f0f0;
+        }
+        .user-avatar {
+            width: 80px; height: 80px; background-color: #e9ecef; border-radius: 50%;
+            margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #adb5bd;
+        }
+        .sidebar h2 { margin: 0; font-size: 1.1rem; color: #333; }
+        .sidebar-menu { list-style: none; padding: 20px 0; margin: 0; flex-grow: 1; }
+        .sidebar-menu li a, .logout-btn {
+            display: flex; align-items: center; padding: 12px 25px;
+            color: #555; text-decoration: none; transition: all 0.2s;
+            font-weight: 500; font-size: 0.95rem; border-right: 3px solid transparent;
+        }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            background-color: #f8f9fa; color: #007bff; border-right-color: #007bff;
+        }
+        .sidebar-footer { padding: 20px; border-top: 1px solid #f0f0f0; }
+        
+        /* دکمه بازگشت به فروشگاه */
+        .btn-back-home {
+            display: block; width: 100%; text-align: center; padding: 10px;
+            background-color: #28a745; color: white !important; border-radius: 8px;
+            margin-bottom: 10px; box-sizing: border-box; text-decoration: none;
+        }
+        .btn-back-home:hover { background-color: #218838; opacity: 1 !important; }
+
+        /* دکمه خروج */
+        .logout-form { margin: 0; }
+        .logout-btn {
+            width: 100%; background: none; border: none; cursor: pointer;
+            color: #dc3545; font-family: inherit; font-size: 0.95rem; text-align: right;
+        }
+        .logout-btn:hover { background-color: #fef2f2; }
+
+        /* محتوای اصلی */
         .main-content { flex-grow: 1; padding: 40px; overflow-y: auto; }
-        .alert-success { background-color: #d4edda; color: #155724; padding: 15px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 20px; }
-        .alert-error { background-color: #f8d7da; color: #721c24; padding: 15px; border: 1px solid #f5c6cb; border-radius: 5px; margin-bottom: 20px; }
-        .content-header { border-bottom: 1px solid #dee2e6; padding-bottom: 20px; margin-bottom: 30px; }
-        .logout-form-sidebar { margin: 0; }
-        .logout-button-sidebar { background: none!important; border: none; text-align: right; width: 100%; font-family: inherit; font-size: inherit; font-weight: 600; cursor: pointer; }
+        .content-container { max-width: 1000px; margin: 0 auto; }
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .alert-success { background-color: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+        .alert-error { background-color: #f8d7da; color: #842029; border: 1px solid #f5c6cb; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>{{ user.first_name|default:user.username }}</h2>
-        <ul>
+        <div class="sidebar-header">
+            <div class="user-avatar">👤</div>
+            <h2>{{ user.first_name|default:user.username }}</h2>
+            <span style="font-size: 0.8rem; color: #888; margin-top: 5px; display: block;">
+                {% if user.profile.is_seller %}فروشنده{% else %}کاربر عادی{% endif %}
+            </span>
+        </div>
+        
+        <ul class="sidebar-menu">
             <li><a href="{% url 'dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>پیشخوان</a></li>
             
             {% if user.profile.is_seller %}
-                <!-- ========== لینک‌های مخصوص فروشنده ========== -->
+                <!-- لینک‌های مخصوص فروشنده -->
                 <li><a href="{% url 'products:seller_product_list' %}" {% if 'products:' in request.resolver_match.view_name %}class="active"{% endif %}>مدیریت محصولات</a></li>
-                <li><a href="#">مدیریت سفارش‌ها</a></li>
+                
+                <!-- ========== لینک جدید اینجاست ========== -->
+                <li><a href="{% url 'orders:seller_order_list' %}" {% if 'seller_order' in request.resolver_match.url_name %}class="active"{% endif %}>مدیریت سفارش‌ها</a></li>
+                <!-- ==================================== -->
+            
             {% else %}
-                <!-- ========== لینک‌های مخصوص کاربر عادی ========== -->
-                <li><a href="#">سفارش‌های من</a></li>
-                <li><a href="#">علاقه‌مندی‌ها</a></li>
+                <!-- لینک‌های مخصوص کاربر عادی -->
+                <li><a href="{% url 'orders:order_list' %}" {% if request.resolver_match.url_name == 'order_list' %}class="active"{% endif %}>سفارش‌های من</a></li>
             {% endif %}
             
+            <li><a href="{% url 'address_list' %}" {% if 'address_' in request.resolver_match.url_name %}class="active"{% endif %}>آدرس‌های من</a></li>
             <li><a href="{% url 'profile_edit' %}" {% if request.resolver_match.url_name == 'profile_edit' %}class="active"{% endif %}>ویرایش پروفایل</a></li>
-            <li><a href="#">تغییر رمز عبور</a></li>
-            <hr style="border-color: #495057; margin: 20px 0;">
-            <li>
-                <form class="logout-form-sidebar" method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-button-sidebar">خروج</button>
-                </form>
-            </li>
         </ul>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'homepage' %}" class="btn-back-home">← بازگشت به فروشگاه</a>
+            
+            <form class="logout-form" method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">خروج از حساب</button>
+            </form>
+        </div>
     </div>
+
     <div class="main-content">
-        {% if messages %}
-            <div class="messages">
+        <div class="content-container">
+            {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}">{{ message }}</div>
                 {% endfor %}
-            </div>
-        {% endif %}
-        <div class="content-header">
-            <h1>{% block page_title %}خوش آمدید!{% endblock %}</h1>
-        </div>
-        <div class="page-content">
+            {% endif %}
+            
             {% block content %}{% endblock %}
         </div>
     </div>

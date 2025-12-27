@@ -1,59 +1,239 @@
-<!-- products/templates/products/seller_product_list.html -->
 {% extends 'users/dashboard_base.html' %}
 {% load humanize %}
 
 {% block title %}مدیریت محصولات{% endblock %}
 
-{% block page_title %}
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span>مدیریت محصولات</span>
-        <a href="{% url 'products:seller_product_create' %}" class="btn-add-product">افزودن محصول جدید</a>
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>تصویر</th>
-                    <th>نام محصول</th>
-                    <th>قیمت</th>
-                    <th>عملیات</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                    <tr>
-                        <td>
-                            {% if product.image %}
-                                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="60" height="60" style="object-fit: cover; border-radius: 5px;">
-                            {% endif %}
-                        </td>
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.price|intcomma }} تومان</td>
-                        <td>
-                            <a href="{% url 'products:seller_product_update' pk=product.pk %}" class="btn-action btn-edit">ویرایش</a>
-                            <a href="{% url 'products:seller_product_delete' pk=product.pk %}" class="btn-action btn-delete">حذف</a>
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="4" style="text-align: center; padding: 40px;">شما هنوز محصولی اضافه نکرده‌اید.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<!-- نوار ابزار بالای جدول -->
+<div class="action-bar">
+    <h2 style="margin: 0;">لیست محصولات شما</h2>
 
-    <style>
-        .btn-add-product { background-color: #28a745; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
-        .table-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; vertical-align: middle; }
-        th { background-color: #f8f9fa; font-weight: 600; }
-        .btn-action { padding: 5px 12px; border-radius: 5px; text-decoration: none; color: white; font-size: 0.9em; }
-        .btn-edit { background-color: #007bff; }
-        .btn-delete { background-color: #dc3545; }
-    </style>
+    <!-- دکمه افزودن محصول اینجاست 👇 -->
+    <a href="{% url 'products:seller_product_create' %}" class="btn-add-new">
+        <span class="icon">＋</span> افزودن محصول جدید
+    </a>
+</div>
+
+<div class="table-container">
+    {% if products %}
+    <table>
+        <thead>
+            <tr>
+                <th width="80">تصویر</th>
+                <th>مشخصات محصول</th>
+                <th>قیمت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
+                    {% else %}
+                    <div class="no-image">📷</div>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="product-title">{{ product.name }}</div>
+                    <div class="product-date">تاریخ ثبت: {{ product.created_at|date:"Y/m/d" }}</div>
+                </td>
+                <td>
+                    <span class="price-tag">{{ product.price|intcomma }}</span> <small>تومان</small>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{% url 'products:seller_product_update' pk=product.pk %}"
+                            class="btn-action edit">ویرایش</a>
+                        <a href="{% url 'products:seller_product_delete' pk=product.pk %}"
+                            class="btn-action delete">حذف</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <!-- حالت خالی بودن لیست -->
+    <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h3>شما هنوز هیچ محصولی ندارید!</h3>
+        <p>اولین محصول خود را همین الان اضافه کنید و فروش را شروع کنید.</p>
+        <a href="{% url 'products:seller_product_create' %}" class="btn-add-new large">
+            افزودن اولین محصول
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    /* استایل نوار ابزار */
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        background: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    /* استایل دکمه افزودن */
+    .btn-add-new {
+        background-color: #28a745;
+        color: white !important;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-add-new:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+    }
+
+    .btn-add-new.large {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        margin-top: 15px;
+    }
+
+    .icon {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    /* استایل جدول */
+    .table-container {
+        background: white;
+        padding: 0;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background-color: #f8f9fa;
+        color: #555;
+        font-weight: 600;
+        padding: 15px;
+        text-align: right;
+        border-bottom: 2px solid #eee;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover {
+        background-color: #fcfcfc;
+    }
+
+    /* استایل‌های داخلی جدول */
+    .product-thumb {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+
+    .no-image {
+        width: 60px;
+        height: 60px;
+        background: #eee;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #aaa;
+    }
+
+    .product-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .product-date {
+        font-size: 0.85rem;
+        color: #888;
+    }
+
+    .price-tag {
+        font-weight: bold;
+        color: #333;
+        font-size: 1.1rem;
+    }
+
+    /* دکمه‌های عملیات */
+    .btn-group {
+        display: flex;
+        gap: 5px;
+    }
+
+    .btn-action {
+        padding: 6px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        color: white !important;
+        font-size: 0.85rem;
+    }
+
+    .edit {
+        background-color: #3b82f6;
+    }
+
+    .edit:hover {
+        background-color: #2563eb;
+    }
+
+    .delete {
+        background-color: #ef4444;
+    }
+
+    .delete:hover {
+        background-color: #dc2626;
+    }
+
+    /* حالت خالی */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 10px 0;
+        color: #333;
+    }
+
+    .empty-state p {
+        color: #666;
+        margin-bottom: 20px;
+    }
+</style>
 {% endblock %}

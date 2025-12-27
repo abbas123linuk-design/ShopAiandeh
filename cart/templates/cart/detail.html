@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}سبد خرید شما{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>سبد خرید شما</h1>
+    <div class="cart-container">
+        <div class="cart-items">
+            <table>
+                <thead>
+                    <tr>
+                        <th>محصول</th>
+                        <th>تعداد</th>
+                        <th>قیمت واحد</th>
+                        <th>قیمت کل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td>
+                                <div class="product-item">
+                                    <a href="{{ item.product.get_absolute_url }}">
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                    </a>
+                                    <div>
+                                        <p>{{ item.product.name }}</p>
+                                        <form action="{% url 'cart:cart_remove' item.product.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="remove-btn">حذف</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <form action="{% url 'cart:cart_add' item.product.id %}" method="post">
+                                    {% csrf_token %}
+                                    {{ item.update_quantity_form.quantity }}
+                                    {{ item.update_quantity_form.update }}
+                                    <button type="submit">بروزرسانی</button>
+                                </form>
+                            </td>
+                            <td>{{ item.price|intcomma }} تومان</td>
+                            <td>{{ item.total_price|intcomma }} تومان</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="cart-summary">
+            <h3>خلاصه سفارش</h3>
+            <p>مبلغ کل: <span>{{ cart.get_total_price|intcomma }} تومان</span></p>
+            <!-- دکمه پرداخت را بعدا به صفحه checkout لینک می‌دهیم -->
+            <a href="#" class="checkout-btn">ادامه فرآیند خرید</a>
+        </div>
+    </div>
+</div>
+<style>
+    .cart-container { display: flex; gap: 30px; }
+    .cart-items { flex-grow: 1; }
+    .cart-summary { width: 300px; flex-shrink: 0; background: #f8f9fa; padding: 20px; border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; }
+    .product-item { display: flex; align-items: center; gap: 15px; }
+    .product-item img { width: 80px; height: 80px; object-fit: cover; }
+    .remove-btn { color: red; background: none; border: none; cursor: pointer; }
+    .checkout-btn { display: block; width: 100%; background: #28a745; color: white; text-align: center; padding: 15px; border-radius: 5px; text-decoration: none; }
+</style>
+{% endblock %}

@@ -3,20 +3,32 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile
+from .models import Profile, Address # Address را وارد کنید
 
-# فرم ثبت‌نام
+# ========== فرم جدید برای آدرس ==========
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        # ما فیلد 'user' را نمی‌آوریم چون به صورت خودکار ست می‌شود
+        fields = ['province', 'city', 'postal_code', 'address_detail', 'is_default']
+        labels = {
+            'province': 'استان',
+            'city': 'شهر',
+            'postal_code': 'کد پستی (۱۰ رقمی، بدون خط تیره)',
+            'address_detail': 'آدرس دقیق، پلاک و واحد',
+            'is_default': 'ثبت به عنوان آدرس پیش‌فرض',
+        }
+# ========================================
+
 class UserRegisterForm(UserCreationForm):
+    # ... (این کلاس بدون تغییر)
     first_name = forms.CharField(max_length=30, required=True, label="نام")
     last_name = forms.CharField(max_length=30, required=True, label="نام خانوادگی")
-    # ایمیل را به صورت یک فیلد اختیاری تعریف می‌کنیم 👇
     email = forms.EmailField(required=False, label="آدرس ایمیل (اختیاری)")
     is_seller = forms.BooleanField(required=False, label="به عنوان فروشنده ثبت‌نام می‌کنم")
-
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'email',)
-
     def save(self, commit=True):
         user = super().save(commit=False)
         if commit:
@@ -25,23 +37,16 @@ class UserRegisterForm(UserCreationForm):
             user.profile.save()
         return user
 
-
-# فرم برای ویرایش اطلاعات مدل User
 class UserUpdateForm(forms.ModelForm):
-    # ایمیل را در فرم ویرایش هم به صورت اختیاری تعریف می‌کنیم 👇
+    # ... (این کلاس بدون تغییر)
     email = forms.EmailField(required=False, label="آدرس ایمیل")
-
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
-        labels = {
-            'first_name': 'نام',
-            'last_name': 'نام خانوادگی',
-        }
+        labels = {'first_name': 'نام', 'last_name': 'نام خانوادگی',}
 
-
-# فرم برای ویرایش اطلاعات مدل Profile
 class ProfileUpdateForm(forms.ModelForm):
+    # ... (این کلاس بدون تغییر)
     class Meta:
         model = Profile
         fields = []

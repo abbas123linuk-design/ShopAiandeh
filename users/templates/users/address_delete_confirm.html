@@ -1,0 +1,19 @@
+{% extends 'users/dashboard_base.html' %}
+{% block title %}تایید حذف آدرس{% endblock %}
+{% block page_title %}تایید حذف آدرس{% endblock %}
+{% block content %}
+    <div class="confirm-container">
+        <p>آیا از حذف این آدرس اطمینان دارید؟</p>
+        <p>{{ address }}</p>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn-delete">بله، حذف کن</button>
+            <a href="{% url 'address_list' %}" class="btn-cancel">انصراف</a>
+        </form>
+    </div>
+    <style>
+        .confirm-container { text-align: center; }
+        .btn-delete { background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-cancel { background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
+    </style>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'users/dashboard_base.html' %}
+{% load humanize %}
+
+{% block title %}سفارش‌های دریافتی{% endblock %}
+
+{% block content %}
+    <h2>📦 سفارش‌های دریافتی شما</h2>
+    <p style="color: #666; margin-bottom: 30px;">لیست محصولاتی که کاربران از شما خریداری کرده‌اند و باید ارسال شوند.</p>
+
+    <div class="table-container">
+        {% if seller_items %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>شماره سفارش</th>
+                        <th>تصویر</th>
+                        <th>محصول</th>
+                        <th>تعداد</th>
+                        <th>مبلغ کل</th>
+                        <th>مشخصات خریدار</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in seller_items %}
+                        <tr>
+                            <td>
+                                <strong>#{{ item.order.id }}</strong>
+                                <br>
+                                <small style="color: #888;">{{ item.order.created_at|date:"Y/m/d" }}</small>
+                            </td>
+                            <td>
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" width="50" height="50" style="object-fit: cover; border-radius: 4px; border: 1px solid #eee;">
+                                {% else %}
+                                    <span style="color: #ccc; font-size: 0.8rem;">---</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ item.product.name }}</strong>
+                            </td>
+                            <td>{{ item.quantity }} عدد</td>
+                            <td>{{ item.get_cost|intcomma }} تومان</td>
+                            <td>
+                                <strong>{{ item.order.user.first_name }} {{ item.order.user.last_name }}</strong>
+                                <br>
+                                <small style="display: block; max-width: 200px; line-height: 1.4; color: #555;">
+                                    {{ item.order.address }}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge pending">باید ارسال شود</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
+                <h3>هنوز سفارشی دریافت نکرده‌اید.</h3>
+                <p>وقتی کاربری محصول شما را بخرد، اینجا نمایش داده می‌شود.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .table-container { background: white; padding: 20px; border-radius: 8px; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; vertical-align: middle; }
+        th { background-color: #f8f9fa; font-weight: 600; color: #555; }
+        tr:hover { background-color: #fcfcfc; }
+        
+        .badge { padding: 5px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 500; }
+        .badge.pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        
+        .empty-state { text-align: center; padding: 60px 20px; color: #666; }
+        .empty-state h3 { color: #333; margin: 0 0 10px 0; }
+    </style>
+{% endblock %}

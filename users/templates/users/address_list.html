@@ -1,0 +1,36 @@
+{% extends 'users/dashboard_base.html' %}
+{% block title %}مدیریت آدرس‌ها{% endblock %}
+{% block page_title %}
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>آدرس‌های من</span>
+        <a href="{% url 'address_create' %}" class="btn-add">افزودن آدرس جدید</a>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="address-grid">
+        {% for address in addresses %}
+            <div class="address-card {% if address.is_default %}default{% endif %}">
+                {% if address.is_default %}<span class="default-badge">پیش‌فرض</span>{% endif %}
+                <h4>{{ address.province }}, {{ address.city }}</h4>
+                <p>{{ address.address_detail }}</p>
+                <p><strong>کد پستی:</strong> {{ address.postal_code }}</p>
+                <div class="actions">
+                    <a href="{% url 'address_update' pk=address.pk %}">ویرایش</a>
+                    <a href="{% url 'address_delete' pk=address.pk %}">حذف</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>شما هنوز هیچ آدرسی ثبت نکرده‌اید.</p>
+        {% endfor %}
+    </div>
+    <style>
+        .btn-add { background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
+        .address-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .address-card { background: white; padding: 20px; border-radius: 8px; position: relative; border: 1px solid #eee; }
+        .address-card.default { border-color: #007bff; }
+        .default-badge { position: absolute; top: 15px; left: 15px; background: #007bff; color: white; padding: 3px 8px; font-size: 0.8em; border-radius: 4px; }
+        .address-card h4 { margin-top: 0; }
+        .address-card .actions { margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
+        .address-card .actions a { margin-left: 15px; text-decoration: none; color: #007bff; }
+    </style>
+{% endblock %}

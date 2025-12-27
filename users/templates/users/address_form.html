@@ -1,0 +1,16 @@
+{% extends 'users/dashboard_base.html' %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+    <div class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">ذخیره آدرس</button>
+        </form>
+    </div>
+    <style>
+        .form-container { background: white; padding: 30px; border-radius: 8px; max-width: 600px; margin: auto; }
+        form p { display: flex; flex-direction: column; margin-bottom: 15px; }
+    </style>
+{% endblock %}
