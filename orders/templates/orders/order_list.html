@@ -1,37 +1,64 @@
 {% extends 'users/dashboard_base.html' %}
 {% load humanize %}
-
 {% block title %}سفارش‌های من{% endblock %}
-
 {% block content %}
 <h2>سفارش‌های من</h2>
 <div class="orders-container">
     {% for order in orders %}
-        <div class="order-card">
-            <div class="order-header">
-                <span>شماره سفارش: #{{ order.id }}</span>
-                <span class="date">{{ order.created_at|date:"Y/m/d" }}</span>
-            </div>
-            <div class="order-body">
-                <p>مبلغ کل: <strong>{{ order.total_price|intcomma }} تومان</strong></p>
-                <p>وضعیت: 
-                    {% if order.is_paid %}
-                        <span style="color: green;">پرداخت شده</span>
-                    {% else %}
-                        <span style="color: red;">در انتظار پرداخت</span>
-                    {% endif %}
-                </p>
-            </div>
+    <div class="order-card">
+        <div class="order-header">
+            <span>شماره سفارش: #{{ order.id }}</span>
+            <span class="date">{{ order.created_at|date:"Y/m/d" }}</span>
         </div>
+        <div class="order-body">
+            <p>مبلغ کل: <strong>{{ order.total_price|intcomma }} تومان</strong></p>
+            <p>وضعیت:
+                {% if order.is_paid %}
+                <span style="color: green;">پرداخت شده</span>
+                {% else %}
+                <span style="color: red;">در انتظار پرداخت</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
     {% empty %}
-        <p>شما هنوز هیچ سفارشی ثبت نکرده‌اید.</p>
-        <a href="{% url 'homepage' %}" class="btn-start-shopping">شروع خرید</a>
+    <p>شما هنوز هیچ سفارشی ثبت نکرده‌اید.</p>
+    <a href="{% url 'homepage' %}" class="btn-start-shopping">شروع خرید</a>
     {% endfor %}
 </div>
 
 <style>
-    .order-card { background: white; border: 1px solid #eee; border-radius: 8px; padding: 20px; margin-bottom: 15px; }
-    .order-header { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; font-weight: bold; color: #555; }
-    .btn-start-shopping { display: inline-block; margin-top: 15px; color: #007bff; text-decoration: none; }
+    .order-card {
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #555;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .btn-start-shopping {
+        display: inline-block;
+        margin-top: 15px;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    @media (max-width: 500px) {
+        .order-header {
+            flex-direction: column;
+        }
+    }
 </style>
 {% endblock %}

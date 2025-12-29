@@ -1,23 +1,18 @@
-# products/forms.py
-
 from django import forms
 from .models import Product
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        # ما فیلد 'seller' را اینجا نمی‌آوریم، چون به صورت خودکار
-        # در view، کاربری که لاگین کرده به عنوان فروشنده ثبت می‌شود.
-        fields = ['name', 'description', 'price', 'image']
-        labels = {
-            'name': 'نام محصول',
-            'description': 'توضیحات کامل',
-            'price': 'قیمت (تومان)',
-            'image': 'تصویر اصلی محصول',
-        }
+        fields = ['category', 'name', 'description', 'price', 'discount_price', 'image']
+        
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
-            'price': forms.NumberInput(attrs={'class': 'form-control'}),
-            'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # اضافه کردن کلاس به تمام فیلدها برای زیبایی
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control', 'style': 'width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc;'})

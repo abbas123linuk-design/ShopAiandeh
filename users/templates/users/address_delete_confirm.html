@@ -1,19 +1,58 @@
 {% extends 'users/dashboard_base.html' %}
 {% block title %}تایید حذف آدرس{% endblock %}
-{% block page_title %}تایید حذف آدرس{% endblock %}
 {% block content %}
-    <div class="confirm-container">
-        <p>آیا از حذف این آدرس اطمینان دارید؟</p>
-        <p>{{ address }}</p>
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn-delete">بله، حذف کن</button>
-            <a href="{% url 'address_list' %}" class="btn-cancel">انصراف</a>
-        </form>
-    </div>
-    <style>
-        .confirm-container { text-align: center; }
-        .btn-delete { background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-cancel { background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
-    </style>
+<div class="confirm-container">
+    <p>آیا از حذف این آدرس اطمینان دارید؟</p>
+    <div class="address-box">{{ address }}</div>
+    <form method="POST" class="action-buttons">
+        {% csrf_token %}
+        <button type="submit" class="btn-delete">بله، حذف کن</button>
+        <a href="{% url 'address_list' %}" class="btn-cancel">انصراف</a>
+    </form>
+</div>
+<style>
+    .confirm-container {
+        text-align: center;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        max-width: 500px;
+        margin: auto;
+    }
+
+    .address-box {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px 0;
+        text-align: right;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-delete,
+    .btn-cancel {
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        flex: 1;
+    }
+
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+</style>
 {% endblock %}

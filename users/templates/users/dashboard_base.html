@@ -15,6 +15,7 @@
             border-left: 1px solid #e1e4e8; flex-shrink: 0;
             display: flex; flex-direction: column;
             box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
         }
         .sidebar-header {
             padding: 30px 20px; text-align: center; border-bottom: 1px solid #f0f0f0;
@@ -36,7 +37,6 @@
         }
         .sidebar-footer { padding: 20px; border-top: 1px solid #f0f0f0; }
         
-        /* دکمه بازگشت به فروشگاه */
         .btn-back-home {
             display: block; width: 100%; text-align: center; padding: 10px;
             background-color: #28a745; color: white !important; border-radius: 8px;
@@ -44,7 +44,6 @@
         }
         .btn-back-home:hover { background-color: #218838; opacity: 1 !important; }
 
-        /* دکمه خروج */
         .logout-form { margin: 0; }
         .logout-btn {
             width: 100%; background: none; border: none; cursor: pointer;
@@ -58,41 +57,86 @@
         .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         .alert-success { background-color: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
         .alert-error { background-color: #f8d7da; color: #842029; border: 1px solid #f5c6cb; }
+
+        /* ریسپانسیو برای موبایل و تبلت */
+        @media (max-width: 992px) {
+            body { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                border-left: none; 
+                border-bottom: 1px solid #e1e4e8;
+            }
+            .sidebar-header { 
+                padding: 15px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: flex-start; 
+                gap: 15px; 
+                text-align: right;
+            }
+            .user-avatar { margin: 0; width: 50px; height: 50px; font-size: 1.5rem; }
+            
+            /* منو به صورت افقی اسکرول‌دار */
+            .sidebar-menu { 
+                display: flex; 
+                overflow-x: auto; 
+                padding: 10px 0; 
+                white-space: nowrap;
+                border-bottom: 1px solid #eee;
+                -webkit-overflow-scrolling: touch;
+            }
+            .sidebar-menu li a { 
+                border-right: none; 
+                border-bottom: 3px solid transparent; 
+                padding: 10px 15px; 
+            }
+            .sidebar-menu li a:hover, .sidebar-menu li a.active {
+                background-color: transparent;
+                border-right-color: transparent;
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+            
+            .sidebar-footer { display: none; /* در موبایل فوتر سایدبار مخفی شود یا ساده شود */ }
+            
+            .main-content { padding: 20px 15px; }
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
             <div class="user-avatar">👤</div>
-            <h2>{{ user.first_name|default:user.username }}</h2>
-            <span style="font-size: 0.8rem; color: #888; margin-top: 5px; display: block;">
-                {% if user.profile.is_seller %}فروشنده{% else %}کاربر عادی{% endif %}
-            </span>
+            <div>
+                <h2>{{ user.first_name|default:user.username }}</h2>
+                <span style="font-size: 0.8rem; color: #888;">
+                    {% if user.profile.is_seller %}فروشنده{% else %}کاربر عادی{% endif %}
+                </span>
+            </div>
         </div>
         
         <ul class="sidebar-menu">
             <li><a href="{% url 'dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>پیشخوان</a></li>
             
             {% if user.profile.is_seller %}
-                <!-- لینک‌های مخصوص فروشنده -->
                 <li><a href="{% url 'products:seller_product_list' %}" {% if 'products:' in request.resolver_match.view_name %}class="active"{% endif %}>مدیریت محصولات</a></li>
-                
-                <!-- ========== لینک جدید اینجاست ========== -->
                 <li><a href="{% url 'orders:seller_order_list' %}" {% if 'seller_order' in request.resolver_match.url_name %}class="active"{% endif %}>مدیریت سفارش‌ها</a></li>
-                <!-- ==================================== -->
-            
             {% else %}
-                <!-- لینک‌های مخصوص کاربر عادی -->
                 <li><a href="{% url 'orders:order_list' %}" {% if request.resolver_match.url_name == 'order_list' %}class="active"{% endif %}>سفارش‌های من</a></li>
             {% endif %}
             
             <li><a href="{% url 'address_list' %}" {% if 'address_' in request.resolver_match.url_name %}class="active"{% endif %}>آدرس‌های من</a></li>
             <li><a href="{% url 'profile_edit' %}" {% if request.resolver_match.url_name == 'profile_edit' %}class="active"{% endif %}>ویرایش پروفایل</a></li>
+            
+            <!-- دکمه خروج برای موبایل اینجا اضافه شد چون فوتر مخفی است -->
+            <li class="mobile-only" style="display: none;">
+                 <a href="{% url 'homepage' %}">بازگشت به خانه</a>
+            </li>
         </ul>
 
         <div class="sidebar-footer">
             <a href="{% url 'homepage' %}" class="btn-back-home">← بازگشت به فروشگاه</a>
-            
             <form class="logout-form" method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="logout-btn">خروج از حساب</button>
@@ -111,5 +155,11 @@
             {% block content %}{% endblock %}
         </div>
     </div>
+    <script>
+        // اسکریپت ساده برای نمایش لینک خروج در موبایل داخل منو
+        if (window.innerWidth <= 992) {
+            document.querySelector('.mobile-only').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

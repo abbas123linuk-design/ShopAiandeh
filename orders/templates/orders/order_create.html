@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
-
 {% block title %}نهایی کردن خرید{% endblock %}
-
 {% block content %}
 <div class="container">
     <h1>نهایی کردن خرید</h1>
@@ -10,10 +8,10 @@
         <h3>خلاصه سفارش شما</h3>
         <ul>
             {% for item in cart %}
-                <li>
-                    {{ item.quantity }} عدد {{ item.product.name }}
-                    <span>{{ item.total_price|intcomma }} تومان</span>
-                </li>
+            <li>
+                <span>{{ item.quantity }} × {{ item.product.name }}</span>
+                <span>{{ item.total_price|intcomma }} ت</span>
+            </li>
             {% endfor %}
         </ul>
         <p class="total">مبلغ کل: <strong>{{ cart.get_total_price|intcomma }} تومان</strong></p>
@@ -22,14 +20,56 @@
     <form method="post" class="order-form">
         {% csrf_token %}
         {{ form.as_p }}
-        <p><button type="submit">ثبت نهایی سفارش و پرداخت</button></p>
+        <p><button type="submit">ثبت نهایی و پرداخت</button></p>
     </form>
 </div>
 <style>
-    .order-summary { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-    .order-summary ul { list-style: none; padding: 0; }
-    .order-summary li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-    .order-summary .total { font-size: 1.2rem; margin-top: 15px; text-align: left; }
-    .order-form button { background: #28a745; color: white; padding: 15px; width: 100%; border: none; border-radius: 8px; font-size: 1.2rem; cursor: pointer; }
+    .order-summary {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+
+    .order-summary ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .order-summary li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        flex-wrap: wrap;
+    }
+
+    .order-summary .total {
+        font-size: 1.2rem;
+        margin-top: 15px;
+        text-align: left;
+    }
+
+    .order-form button {
+        background: #28a745;
+        color: white;
+        padding: 15px;
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .order-form input,
+    .order-form select,
+    .order-form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
 </style>
 {% endblock %}

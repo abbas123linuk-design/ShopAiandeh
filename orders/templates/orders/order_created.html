@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
-
 {% block title %}سفارش شما ثبت شد{% endblock %}
-
 {% block content %}
-<div class="container" style="text-align: center;">
-    <h1>✅ متشکریم!</h1>
-    <p>سفارش شما با موفقیت ثبت شد. شماره سفارش شما <strong>#{{ order.id }}</strong> است.</p>
-    <p><a href="{% url 'homepage' %}">بازگشت به صفحه اصلی</a></p>
+<div class="container" style="text-align: center; padding-top: 50px;">
+    <h1 style="color: green;">✅ متشکریم!</h1>
+    <p>سفارش شما با موفقیت ثبت شد.</p>
+    <p>شماره سفارش: <strong>#{{ order.id }}</strong></p>
+    <p style="margin-top: 30px;"><a href="{% url 'homepage' %}" class="btn btn-primary">بازگشت به صفحه اصلی</a></p>
 </div>
 {% endblock %}

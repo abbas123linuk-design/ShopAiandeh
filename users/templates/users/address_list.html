@@ -1,36 +1,115 @@
 {% extends 'users/dashboard_base.html' %}
+
 {% block title %}مدیریت آدرس‌ها{% endblock %}
-{% block page_title %}
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span>آدرس‌های من</span>
-        <a href="{% url 'address_create' %}" class="btn-add">افزودن آدرس جدید</a>
-    </div>
-{% endblock %}
+
+{% block page_title %}مدیریت آدرس‌ها{% endblock %}
+
 {% block content %}
+    <!-- هدر بخش آدرس‌ها با دکمه افزودن -->
+    <div class="address-header">
+        <h3>لیست آدرس‌های من</h3>
+        <a href="{% url 'address_create' %}" class="btn-add-new">+ افزودن آدرس جدید</a>
+    </div>
+
     <div class="address-grid">
         {% for address in addresses %}
             <div class="address-card {% if address.is_default %}default{% endif %}">
                 {% if address.is_default %}<span class="default-badge">پیش‌فرض</span>{% endif %}
-                <h4>{{ address.province }}, {{ address.city }}</h4>
-                <p>{{ address.address_detail }}</p>
-                <p><strong>کد پستی:</strong> {{ address.postal_code }}</p>
+                
+                <div class="card-row">
+                    <span class="label">استان/شهر:</span>
+                    <strong>{{ address.province }} - {{ address.city }}</strong>
+                </div>
+                
+                <div class="card-row address-text">
+                    <span class="label">آدرس دقیق:</span>
+                    <p>{{ address.address_detail }}</p>
+                </div>
+                
+                <div class="card-row">
+                    <span class="label">کد پستی:</span>
+                    <span>{{ address.postal_code }}</span>
+                </div>
+
                 <div class="actions">
-                    <a href="{% url 'address_update' pk=address.pk %}">ویرایش</a>
-                    <a href="{% url 'address_delete' pk=address.pk %}">حذف</a>
+                    <a href="{% url 'address_update' pk=address.pk %}" class="btn-edit">ویرایش</a>
+                    <a href="{% url 'address_delete' pk=address.pk %}" class="btn-delete">حذف</a>
                 </div>
             </div>
         {% empty %}
-            <p>شما هنوز هیچ آدرسی ثبت نکرده‌اید.</p>
+            <div class="empty-state">
+                <p>شما هنوز هیچ آدرسی ثبت نکرده‌اید.</p>
+                <a href="{% url 'address_create' %}" class="btn-add-large">ثبت اولین آدرس</a>
+            </div>
         {% endfor %}
     </div>
+
     <style>
-        .btn-add { background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
-        .address-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .address-card { background: white; padding: 20px; border-radius: 8px; position: relative; border: 1px solid #eee; }
-        .address-card.default { border-color: #007bff; }
-        .default-badge { position: absolute; top: 15px; left: 15px; background: #007bff; color: white; padding: 3px 8px; font-size: 0.8em; border-radius: 4px; }
-        .address-card h4 { margin-top: 0; }
-        .address-card .actions { margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
-        .address-card .actions a { margin-left: 15px; text-decoration: none; color: #007bff; }
+        /* هدر و دکمه افزودن */
+        .address-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; flex-wrap: wrap; gap: 15px;
+        }
+        .address-header h3 { margin: 0; font-size: 1.2rem; color: #333; }
+        
+        .btn-add-new {
+            background-color: #28a745; color: white; padding: 10px 20px;
+            border-radius: 8px; text-decoration: none; font-weight: bold;
+            display: inline-flex; align-items: center; transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .btn-add-new:hover { background-color: #218838; }
+
+        /* گرید کارت‌ها */
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* کارت آدرس */
+        .address-card {
+            background: white; padding: 20px; border-radius: 12px;
+            border: 1px solid #e1e4e8; position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .address-card.default { border: 2px solid #007bff; }
+        
+        .default-badge {
+            position: absolute; top: -10px; left: 15px;
+            background: #007bff; color: white; padding: 4px 10px;
+            font-size: 0.75rem; border-radius: 20px;
+        }
+
+        .card-row { display: flex; flex-direction: column; gap: 5px; }
+        .card-row.address-text p { margin: 0; color: #555; line-height: 1.6; font-size: 0.95rem; }
+        .label { font-size: 0.85rem; color: #888; }
+
+        /* دکمه‌های عملیات */
+        .actions {
+            margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;
+            display: flex; gap: 15px;
+        }
+        .actions a { text-decoration: none; font-size: 0.9rem; }
+        .btn-edit { color: #007bff; }
+        .btn-delete { color: #dc3545; }
+
+        /* حالت خالی */
+        .empty-state {
+            grid-column: 1 / -1; text-align: center; padding: 40px;
+            background: white; border-radius: 12px; border: 2px dashed #ddd;
+        }
+        .btn-add-large {
+            display: inline-block; margin-top: 15px; background: #007bff;
+            color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none;
+        }
+
+        /* ریسپانسیو */
+        @media (max-width: 500px) {
+            .address-header { flex-direction: column; align-items: stretch; text-align: center; }
+            .btn-add-new { justify-content: center; }
+            .address-grid { grid-template-columns: 1fr; }
+        }
     </style>
 {% endblock %}

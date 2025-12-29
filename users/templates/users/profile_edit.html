@@ -1,21 +1,57 @@
-<!-- users/templates/users/profile_edit.html -->
 {% extends 'users/dashboard_base.html' %}
-
 {% block title %}ویرایش پروفایل{% endblock %}
-
 {% block page_title %}ویرایش اطلاعات پروفایل{% endblock %}
-
 {% block content %}
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset>
-            <legend>اطلاعات شخصی</legend>
-            {{ u_form.as_p }}
-        </fieldset>
-        <fieldset>
-            <legend>اطلاعات پروفایل</legend>
-            {{ p_form.as_p }}
-        </fieldset>
-        <button type="submit">ذخیره تغییرات</button>
-    </form>
+<form method="POST" enctype="multipart/form-data" class="profile-form">
+    {% csrf_token %}
+    <fieldset>
+        <legend>اطلاعات شخصی</legend>
+        {{ u_form.as_p }}
+    </fieldset>
+    <fieldset>
+        <legend>اطلاعات پروفایل</legend>
+        {{ p_form.as_p }}
+    </fieldset>
+    <button type="submit" class="btn-save">ذخیره تغییرات</button>
+</form>
+<style>
+    .profile-form {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    fieldset {
+        border: 1px solid #eee;
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    legend {
+        font-weight: bold;
+        padding: 0 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="file"] {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .btn-save {
+        background: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+    }
+</style>
 {% endblock %}
